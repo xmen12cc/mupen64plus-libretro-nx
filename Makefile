@@ -667,10 +667,17 @@ ifeq ($(DEBUG), 1)
    # behavior/timing match, just carry debug info.
    CPUOPTS += -O2 -g
 else
-   CPUOPTS += -DNDEBUG -fsigned-char -ffast-math -fno-strict-aliasing -fomit-frame-pointer -fvisibility=hidden
-ifneq ($(platform), libnx)
    CPUOPTS := -O3 $(CPUOPTS)
+   CPUOPTS += -DNDEBUG -fsigned-char -ffast-math -fno-strict-aliasing -fomit-frame-pointer -fvisibility=hidden
 endif
+# SANITIZE=address: ASan core for finding memory stomps. Run it behind a
+# wrap.sh that LD_PRELOADs the NDK shared ASan runtime; the report lands
+# in logcat.
+ifdef SANITIZE
+   CPUOPTS += -fsanitize=$(SANITIZE) -fno-omit-frame-pointer
+   LDFLAGS += -fsanitize=$(SANITIZE) -shared-libsan
+endif
+ifneq ($(platform), libnx)
    CXXFLAGS += -fvisibility-inlines-hidden
 endif
 

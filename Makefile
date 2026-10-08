@@ -520,6 +520,11 @@ else ifneq (,$(findstring android,$(platform)))
       CXX = i686-linux-android-g++
       WITH_DYNAREC = x86
       LDFLAGS += -L$(ROOT_DIR)/custom/android/x86
+   else ifneq (,$(findstring arm64,$(platform)))
+      # arm64: modern NDK clang is expected via CC/CXX from the environment
+      # (e.g. the NDK wrappers aarch64-linux-android24-clang). The armv7 gcc
+      # flags below are not valid for aarch64 targets.
+      WITH_DYNAREC = arm64
    else
       CC = arm-linux-androideabi-gcc
       CXX = arm-linux-androideabi-g++
@@ -540,6 +545,12 @@ else ifneq (,$(findstring android,$(platform)))
    CPUFLAGS += -DANDROID -DEGL_EGLEXT_PROTOTYPES
    COREFLAGS += -DOS_LINUX
    ASFLAGS = -f elf -d ELF_TYPE
+   # Buildbot parity for Android: ParaLLEl RDP/RSP + threaded angrylion +
+   # cxd4 (command line can still override).
+   HAVE_PARALLEL_RDP ?= 1
+   HAVE_PARALLEL_RSP ?= 1
+   HAVE_THR_AL ?= 1
+   LLE ?= 1
 # emscripten
 else ifeq ($(platform), emscripten)
    TARGET := $(TARGET_NAME)_libretro_emscripten.bc

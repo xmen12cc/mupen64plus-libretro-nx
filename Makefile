@@ -546,11 +546,12 @@ else ifneq (,$(findstring android,$(platform)))
    COREFLAGS += -DOS_LINUX
    ASFLAGS = -f elf -d ELF_TYPE
    # Buildbot parity for Android: ParaLLEl RDP/RSP + threaded angrylion +
-   # cxd4 (command line can still override).
-   HAVE_PARALLEL_RDP ?= 1
-   HAVE_PARALLEL_RSP ?= 1
-   HAVE_THR_AL ?= 1
-   LLE ?= 1
+   # cxd4. Plain assignment: the header already ?=-defines these to 0, and
+   # a later ?= would be a no-op. Command line still overrides.
+   HAVE_PARALLEL_RDP = 1
+   HAVE_PARALLEL_RSP = 1
+   HAVE_THR_AL = 1
+   LLE = 1
 # emscripten
 else ifeq ($(platform), emscripten)
    TARGET := $(TARGET_NAME)_libretro_emscripten.bc

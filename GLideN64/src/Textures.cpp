@@ -804,8 +804,11 @@ void TextureCache::_checkHdTexLimit()
 
 void TextureCache::_checkCacheSize()
 {
+	// MaxTxCacheSize is 0 when the frontend doesn't answer the option —
+	// evicting then means back() on an empty list (UB, SIGSEGV ~1s into
+	// any game). Treat 0 as "no eviction".
 	size_t m_maxCacheSize = MaxTxCacheSize;
-	if (m_textures.size() >= m_maxCacheSize) {
+	if (m_maxCacheSize > 0 && m_textures.size() >= m_maxCacheSize) {
 		CachedTexture& clsTex = m_textures.back();
 		if (clsTex.bHDTexture)
 			m_hdTexCacheSize -= clsTex.textureBytes;

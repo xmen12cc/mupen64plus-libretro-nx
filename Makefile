@@ -663,8 +663,9 @@ endif
 COREFLAGS += -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS -D__LIBRETRO__ -DUSE_FILE32API -DM64P_PLUGIN_API -DM64P_CORE_PROTOTYPES -D_ENDUSER_RELEASE -DSINC_LOWER_QUALITY -DTXFILTER_LIB -D__VEC4_OPT -DMUPENPLUSAPI
 
 ifeq ($(DEBUG), 1)
-   CPUOPTS += -O0 -g
-   CPUOPTS += -DOPENGL_DEBUG
+   # Symbolized build for crash analysis: keep release-like optimization so
+   # behavior/timing match, just carry debug info.
+   CPUOPTS += -O2 -g
 else
    CPUOPTS += -DNDEBUG -fsigned-char -ffast-math -fno-strict-aliasing -fomit-frame-pointer -fvisibility=hidden
 ifneq ($(platform), libnx)

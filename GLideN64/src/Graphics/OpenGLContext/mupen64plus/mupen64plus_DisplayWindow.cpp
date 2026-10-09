@@ -15,6 +15,7 @@
 #include <DisplayWindow.h>
 
 #include <libretro_private.h>
+#include <glsm/glsmsym.h>
 #include <mupen64plus-next_common.h>
 using namespace opengl;
 
@@ -204,5 +205,9 @@ void DisplayWindowMupen64plus::_readScreen2(void * _dest, int * _width, int * _h
 
 graphics::ObjectHandle DisplayWindowMupen64plus::_getDefaultFramebuffer()
 {
-	return graphics::ObjectHandle::null;
+	// Render the final image into the frontend's framebuffer (glsm's
+	// default framebuffer — the FBO the presenting frontend samples).
+	// Returning null (FBO 0) blits the image to the window surface, which
+	// the frontend presenter then overwrites: black screen (found 2026-10-08).
+	return graphics::ObjectHandle(glsm_get_current_framebuffer());
 }

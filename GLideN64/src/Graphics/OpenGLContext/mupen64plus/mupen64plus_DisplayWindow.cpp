@@ -15,7 +15,6 @@
 #include <DisplayWindow.h>
 
 #include <libretro_private.h>
-#include <glsm/glsmsym.h>
 #include <mupen64plus-next_common.h>
 using namespace opengl;
 
@@ -202,6 +201,10 @@ void DisplayWindowMupen64plus::_readScreen2(void * _dest, int * _width, int * _h
 	free(pBufferData);
 #endif
 }
+
+// glsm's current (frontend-provided) framebuffer; declared locally instead
+// of including glsm headers, which conflict with GLideN64's GL wrappers.
+extern "C" GLuint glsm_get_current_framebuffer(void);
 
 graphics::ObjectHandle DisplayWindowMupen64plus::_getDefaultFramebuffer()
 {
